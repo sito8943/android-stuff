@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">EstoEsUnaPrueba</string>
+    <string name="mapbox_access_token">sk.eyJ1Ijoic2l0b25pbWJ1cyIsImEiOiJjbGU1bXRjMWowYzFpM3FucTRzdjhpaTF3In0.0KjF-nsQSaQjUQ938BNirw</string>
 </resources>
