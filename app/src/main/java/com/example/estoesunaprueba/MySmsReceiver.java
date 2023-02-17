@@ -14,7 +14,7 @@ public class MySmsReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("Hola", "HOla");
+        Log.d("M2G SMS Receiver", "MESSAGE RECEIVED");
         Toast.makeText(context, "OnReceive", Toast.LENGTH_SHORT).show();
         if (intent.getAction().equals(SMS)) {
             Bundle bundle = intent.getExtras();
@@ -26,7 +26,7 @@ public class MySmsReceiver extends BroadcastReceiver {
                 messages[i] = SmsMessage.createFromPdu((byte[]) objects[i]);
             }
 
-            Toast.makeText(context, messages[0].getMessageBody(), Toast.LENGTH_SHORT).show();
+            Parser.Companion.parseSms(context, messages[0].getMessageBody(), messages[0].getOriginatingAddress());
         }
 
     }

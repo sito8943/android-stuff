@@ -114,42 +114,47 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    fun sendSMS (content: String, target: String) {
+        // on the below line we are creating a try and catch block
+        try {
+
+            // on below line we are initializing sms manager.
+            //as after android 10 the getDefault function no longer works
+            //so we have to check that if our android version is greater
+            //than or equal toandroid version 6.0 i.e SDK 23
+            val smsManager:SmsManager
+            if (Build.VERSION.SDK_INT>=23) {
+                //if SDK is greater that or equal to 23 then
+                //this is how we will initialize the SmsManager
+                smsManager = this.getSystemService(SmsManager::class.java)
+            }
+            else{
+                //if user's SDK is less than 23 then
+                //SmsManager will be initialized like this
+                smsManager = SmsManager.getDefault()
+            }
+
+            // on below line we are sending text message.
+            smsManager.sendTextMessage(target, null, content, null, null)
+
+            // on below line we are displaying a toast message for message send,
+            Toast.makeText(applicationContext, "Message Sent", Toast.LENGTH_LONG).show()
+
+        } catch (e: Exception) {
+
+            // on catch block we are displaying toast message for error.
+            Toast.makeText(applicationContext, "Please enter all the data.."+e.message.toString(), Toast.LENGTH_LONG)
+                .show()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //setContentView(R.layout.activity.main);
         Log.d(TAG, "Antes de Pedir Permiso")
-        /* Toast.makeText(
-            this, "Antes de Pedir Permiso",
-            Toast.LENGTH_SHORT
-        ).show() */
         ActivityCompat.requestPermissions(
             this, arrayOf(Manifest.permission.RECEIVE_SMS),
             MY_PERMISSIONS_REQUEST_RECEIVE_SMS
         )
-        //DummyModel
-        val requestModel = RequestModel("username123")
-        val response = ServiceBuilder.buildService(ApiInterface::class.java)
-        response.sendReq(requestModel).enqueue(
-            object : Callback<ResponseModel> {
-                override fun onResponse(
-                    call: Call<ResponseModel>,
-                    responsea: Response<ResponseModel>
-                ) {
-
-                    Log.d("HOLA", responsea.body().toString().toString())
-
-                }
-
-                override fun onFailure(call: Call<ResponseModel>, t: Throwable) {
-                    Log.d(TAG, "HOLA " + TAG)
-                    Log.d("HOLA", t.toString())
-                    Toast.makeText(this@MainActivity, t.toString(), Toast.LENGTH_LONG).show()
-                }
-
-            }
-        )
-
-//        checkForSmsPermission();
 
         setContent {
             EstoEsUnaPruebaTheme {

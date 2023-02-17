@@ -8,17 +8,13 @@ import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.POST
 
-class Network {
-}
+class Network {}
 
 object ServiceBuilder {
     private val client = OkHttpClient.Builder().build()
 
-    private val retrofit = Retrofit.Builder()
-        .baseUrl("http://192.168.1.102:3001/") //
-        .addConverterFactory(GsonConverterFactory.create())
-        .client(client)
-        .build()
+    private val retrofit = Retrofit.Builder().baseUrl("http://192.168.1.102:3001/") //
+        .addConverterFactory(GsonConverterFactory.create()).client(client).build()
 
     fun <T> buildService(service: Class<T>): T {
         return retrofit.create(service)
@@ -29,116 +25,215 @@ interface ApiInterface {
 
     /**
      * request {
+     *  idusuario: String
+     *  pwa: String
+     *  pwn: String
+     * }
+     * response {
+     *  error: String
+     * }
+     * @see 1
+     */
+    @POST("cambiapw")
+    fun cambiapw(@Body requestModel: RequestCambiaPW): Call<ResponseCambiaPW>
+
+    /**
+     * request {
      *  idcliente: String
+     *  origen: String
+     *  destino: String
      *  nombre: String
      *  ci: String
-     *  longitudo: Double
-     *  latitudo: Double
-     *  longitudd: Double
-     *  latitudd: Double
-     *  cantidad: Integer
-     *  tipotaxi: Integer
+     *  phone: String
+     *  cantidad: Int
+     *  tipotaxi: Int
      * }
      * response {
      *  choferes: List<Chofer>
+     *  idcliente: String
      *  error: String
      * }
+     * @see 2
      */
-    @POST("getsolicitataxi")
-    fun getSolicitudTaxis(@Body requestModel: RequestSolicitudTaxis): Call<ResponseSolicitudTaxis>
+    @POST("solicitataxi")
+    fun solicitaTaxis(@Body requestModel: RequestSolicitaTaxis): Call<ResponseSolicitaTaxis>
+
+    /**
+     * request {
+     *  idusuario: String
+     *  password: String
+     *  longitud: Double
+     *  latitud: Double
+     *  longitudd: Double
+     *  latitudd: Double
+     * }
+     * response {
+     *  error: String
+     * }
+     * @see 3
+     */
+    @POST("logintaxi")
+    fun loginTaxi(@Body requestModel: RequestLoginTaxi): Call<ResponseLoginTaxi>
 
     /**
      * request {
      *  idcliente: String
      *  idchofer: String
+     *  origen: String
+     *  destino: String
      * }
      * response {
-     *  msg: String
+     *  keycontrato: Int
+     *  error: String
      * }
+     * @see 4
      */
-    @POST("geteligechofer")
-    fun getEligeChofer(@Body requestModel: RequestEligeChofer): Call<ResponseEligeChofer>
+    @POST("eligechofer")
+    fun eligeChofer(@Body requestModel: RequestEligeChofer): Call<ResponseEligeChofer>
+
+    /**
+     * request {
+     *  keycontrato: Int
+     * }
+     * response {
+     *  error: String
+     * }
+     * @see 5
+     */
+    @POST("carreraok")
+    fun carreraOk(@Body requestModel: RequestCarreraOk): Call<ResponseCarreraOk>
+
+    /**
+     * request {
+     *  chofercliente: Int
+     *  keycontrato: Int
+     *  causa: String
+     * }
+     * response {
+     *  error: String
+     * }
+     * @see 6
+     */
+    @POST("cancelarcarrera")
+    fun cancelarCarrera(@Body requestModel: RequestCancelarCarrera): Call<ResponseCancelarCarrera>
 
     /**
      * request {
      *  idchofer: String
-     *  idcliente: String
+     *  estado: Int
      * }
      * response {
      *  error: String
      * }
+     *
+     * @see 7
      */
-    @POST("getcarreraok")
-    fun getCarreraOk(@Body requestModel: RequestCarreraOk): Call<ResponseCarreraOk>
+    @POST("cambiaestado")
+    fun cambiaEstado(@Body requestModel: RequestCambiaEstado): Call<ResponseCambiaEstado>
 
     /**
-     * request
-     * body {
+     * request {
+     *  nombre: String
+     *  ci: String
+     *  phone: String
+     *  chapa: String
+     *  tarifa: Double
+     *  desc: String
+     *  tipo: Int
+     *  cantidad: Int
+     * }
+     * response {
+     *  idusuario: String
+     *  error: String
+     * }
+     * @see 8
+     */
+    @POST("registrarchofer")
+    fun registrarChofer(@Body requestModel: RequestRegistrarChofer): Call<ResponseRegistrarChofer>
+
+    /**
+     * request {
      *  idcliente: String
-     *  password: String
-     *  longitud: Double
-     *  latitud: Double
+     *  espera: Int
      * }
-     * response
-     * body {
+     * response {
      *  error: String
      * }
+     * @see 9
      */
-    @POST("getlogincliente")
-    fun getLoginCliente(@Body requestModel: RequestLoginCliente): Call<ResponseLoginCliente>
-
-    /**
-     * request
-     * body {
-     *  idchofer: String
-     *  password: String
-     *  longitud: Double
-     *  latitud: Double
-     * }
-     * response
-     * body {
-     *  error: String
-     * }
-     */
-    @POST("getloginchofer")
-    fun getLoginChofer(@Body request: RequestLoginChofer): Call<ResponseLoginChofer>
+    @POST("clienteespera")
+    fun clienteEspera(@Body requestModel: RequestClienteEspera): Call<ResponseClienteEspera>
 
 
 }
 
+
 // requests
-data class RequestSolicitudTaxis(
-    val idcliente: String,
+
+
+// 1
+data class RequestCambiaPW(
+    val idusuario: String, val pwa: String, val pwn: String
+)
+
+// 2
+data class RequestSolicitaTaxis(
+    val origen: String,
+    val destino: String,
+    val cantidad: Int,
+    val tipotaxi: Int,
+    val nombre: String? = null,
+    val ci: String? = null,
+    val phone: String? = null,
+    val idcliente: String? = null,
+
+)
+
+// 3
+data class RequestLoginTaxi(
+    val idusuario: String,
+    val password: String,
+    val longitud: Double,
+    val latitud: Double,
+    val longitudd: Double? = null,
+    val latitudd: Double? = null,
+)
+
+// 4
+data class RequestEligeChofer(
+    val idcliente: String, val idchofer: String, val origen: String, val destino: String
+)
+
+// 5
+data class RequestCarreraOk(
+    val keycontrato: Int
+)
+
+// 6
+data class RequestCancelarCarrera(
+    val chofercliente: Int, val keycontrato: Int, val causa: String
+)
+
+// 7
+data class RequestCambiaEstado(
+    val idchofer: String, val estado: String
+)
+
+// 8
+data class RequestRegistrarChofer(
     val nombre: String,
     val ci: String,
-    val longitud: Double,
-    val latitud: Double,
-    val cantidad: Integer,
-    val tipotaxi: Integer
+    val phone: String,
+    val chapa: String,
+    val tarifa: Double,
+    val desc: String,
+    val tipo: Int,
+    val capacidad: Int
 )
 
-data class RequestLoginChofer(
-    val idchofer: String,
-    val password: String,
-    val longitud: Double,
-    val latitud: Double,
-)
-
-data class RequestEligeChofer(
-    val idcliente: String,
-    val idchofer: String
-)
-
-data class RequestCarreraOk(
-    val idchofer: String,
-    val idcliente: String
-)
-
-data class RequestLoginCliente(
-    val idcliente: String,
-    val password: String,
-    val longitud: Double,
-    val latitud: Double,
+// 9
+data class RequestClienteEspera(
+    val idcliente: String, val espera: Int
 )
 
 data class Chofer(
@@ -147,27 +242,42 @@ data class Chofer(
     val latitud: Double,
     val ci: String,
     val phone: String,
-    val tarifa: Integer,
+    val tarifa: Int,
 )
 
 // responses
-data class ResponseSolicitudTaxis(
-    val choferes: List<Chofer>,
-    val error: String? = null
+data class ResponseSolicitaTaxis(
+    val choferes: List<Chofer>, val idcliente:String, val error: String? = null
 )
 
-data class ResponseLoginChofer(
-    val error: String? = null
+data class ResponseRegistrarChofer(
+    val idusuario: String, val error: String? = null
 )
 
 data class ResponseEligeChofer(
-    val msg: String
+    val keycontrato: String, val error: String? = null
 )
 
 data class ResponseCarreraOk(
     val error: String? = null
 )
 
-data class ResponseLoginCliente(
+data class ResponseLoginTaxi(
+    val error: String? = null
+)
+
+data class ResponseCancelarCarrera(
+    val error: String? = null
+)
+
+data class ResponseCambiaPW(
+    val error: String? = null
+)
+
+data class ResponseCambiaEstado(
+    val error: String? = null
+)
+
+data class ResponseClienteEspera(
     val error: String? = null
 )
